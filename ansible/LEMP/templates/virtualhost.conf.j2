@@ -1,0 +1,51 @@
+server {
+	listen 80 default_server;
+	listen [::]:80 default_server;
+	server_name nogardenonedragon.com www.nogardenonedragon.com drupal.compucorp.devops.local;
+	return 301 https://$server_name$request_uri;
+}
+
+
+server {
+	# SSL
+	listen 443 ssl default_server;
+    	listen [::]:443 ssl default_server;
+	server_name nogardenonedragon.com www.nogardenonedragon.com drupal.compucorp.devops.local;
+    	
+	include snippets/ssl-nogardenonedragon.com.conf;
+    	include snippets/ssl-params.conf;
+	
+	root /var/www/html/drupal;
+    	access_log /var/log/nginx/nogardenonedragon.com_access.log;
+    	error_log /var/log/nginx/nogardenonedragon.com_error.log;
+
+	index index.php index.html index.htm index.nginx-debian.html;
+
+	location / {
+		try_files $uri $uri/ /index.php?q=$uri&$args =404;
+	}
+
+        location ~ \.php$ {
+                try_files $uri =404;
+                fastcgi_pass unix:/run/php/php7.0-fpm.sock;
+                fastcgi_index index.php;
+                fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+                include fastcgi_params;       
+        }
+
+        location ~ /.well-known {
+                allow all;
+        }
+
+	location ^~ /sites/default/files/private {
+		internal;
+	}
+
+	location ^~ /sites/default/files/civicrm/custom {
+		internal;
+	}
+	
+	location ^~ /sites/default/files/civicrm/upload {
+		internal;
+	}
+}
