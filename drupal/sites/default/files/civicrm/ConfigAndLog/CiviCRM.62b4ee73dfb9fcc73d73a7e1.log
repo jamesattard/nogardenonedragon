@@ -1,0 +1,9 @@
+Feb 26 12:56:22  [info] Creating canary table
+
+Feb 26 12:57:02  [info] $Fatal Error Details = Array
+(
+    [message] => Cannot install this extension - curl is not installed!
+    [code] => 
+)
+
+
